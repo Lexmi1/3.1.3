@@ -2,11 +2,11 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>New user</title>
+    <title>Edit user</title>
 </head>
 <body>
 
-<form th:method="POST" th:action="@{/admin/users}" th:object="${user}">
+<form action="#" th:method="PUT" th:action="@{/admin/edit/}" th:object="${user}">
 
     <input type="hidden" th:field="*{id}"/>
 
@@ -38,9 +38,7 @@
     <br/><br/>
 
 </form>
-
-<input type="button" value="Logout"
-       onclick="window.location.href = '/logout'"/>
-
+<br>
+<button class="buttonLogout" onclick="window.location.href = '/logout';">Logout</button>
 </body>
 </html>

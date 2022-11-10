@@ -24,8 +24,8 @@
             <td th:utext="${user.getUsername()}"></td>
             <td th:utext="${user.getRoles()}"></td>
             <td>
-                <form th:method="PATCH" th:action="@{/admin/users/update(userId=${user.getId()})}">
-                    <input type="submit" value="Update"/>
+                <form th:action="@{'/admin/edit/' + ${user.id}}">
+                    <input type="submit" class="buttonEdit" value="Edit"/>
                 </form>
 
                 <form th:method="DELETE" th:action="@{/admin/users/delete(userId=${user.getId()})}">

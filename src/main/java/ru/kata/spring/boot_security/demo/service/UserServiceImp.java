@@ -10,42 +10,44 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.kata.spring.boot_security.demo.dao.UserDao;
 import ru.kata.spring.boot_security.demo.model.Role;
 import ru.kata.spring.boot_security.demo.model.User;
-import ru.kata.spring.boot_security.demo.repositories.UsersRepository;
 
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
-import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
 public class UserServiceImp implements UserService, UserDetailsService {
 
-    private final UsersRepository usersRepository;
     private final PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+    private final RoleService roleService;
+    private final UserDao userDao;
     @Autowired
-    public UserServiceImp(UsersRepository usersRepository) {
-        this.usersRepository = usersRepository;
+    public UserServiceImp(RoleService roleService, UserDao userDao) {
+        this.roleService = roleService;
+        this.userDao = userDao;
     }
 
     @Override
     @Transactional(readOnly = true)
     public List<User> getUsers() {
-        return usersRepository.findAll();
+        return userDao.getUsers();
     }
 
     @Override
     @Transactional(readOnly = true)
     public User getUser(int id) {
-        Optional<User> user = usersRepository.findById(id);
-        return user.orElse(null);
+        return userDao.getUser(id);
     }
 
     @Override
     @Transactional(readOnly = true)
     public User findByUsername(String username) {
-        return usersRepository.findByUsername(username);
+        return userDao.getUserByLogin(username);
     }
 
     @Override
@@ -62,13 +64,36 @@ public class UserServiceImp implements UserService, UserDetailsService {
     @Transactional
     public void save(User user) {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
-        usersRepository.save(user);
+        userDao.save(user);
+    }
+    @Override
+    public void updateUser(User user) {
+        userDao.updateUser(passwordCoder(user));
     }
 
     @Override
     @Transactional
     public void delete(int id) {
-        usersRepository.deleteById(id);
+        userDao.delete(id);
+    }
+
+    @Transactional
+    @Override
+    public void addDefaultUser() {
+        Set<Role> roleSet = new HashSet<>();
+        roleSet.add(roleService.findById(1));
+        Set<Role> roleSet2 = new HashSet<>();
+        roleSet2.add(roleService.findById(1));
+        roleSet2.add(roleService.findById(2));
+        User user1 = new User("user", "user", "user", "user", roleSet);
+        User user2 = new User("admin", "admin", "admin", "admin", roleSet2);
+        save(user1);
+        save(user2);
+    }
+
+    public User passwordCoder(User user) {
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        return user;
     }
 
     @Override

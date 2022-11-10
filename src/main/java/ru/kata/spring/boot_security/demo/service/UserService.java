@@ -10,13 +10,17 @@ import java.util.List;
 public interface UserService {
     List<User> getUsers();
 
-    void save(User user);
-
     User getUser(int id);
 
-    void delete(int id);
-
     User findByUsername(String username);
+
+    void addDefaultUser();
+
+    void save(User user);
+
+    void updateUser(User user);
+
+    void delete(int id);
 
     Collection<? extends GrantedAuthority> grantedAuthorities(Collection<Role> roles);
 }
