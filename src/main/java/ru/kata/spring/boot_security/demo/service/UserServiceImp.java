@@ -30,6 +30,7 @@ public class UserServiceImp implements UserService, UserDetailsService {
     public UserServiceImp(RoleService roleService, UserDao userDao) {
         this.roleService = roleService;
         this.userDao = userDao;
+        addDefaultUser();
     }
 
     @Override

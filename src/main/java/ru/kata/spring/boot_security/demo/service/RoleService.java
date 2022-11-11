@@ -15,4 +15,5 @@ public interface RoleService {
     Role findById(int id);
 
     Set<Role> findByIdRoles(List<Integer> roles);
+
 }
